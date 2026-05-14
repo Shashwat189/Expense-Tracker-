@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "rimraf .wrangler/deploy && vite build",
+    "build": "rimraf .wrangler && vite build",
     "postbuild": "rimraf dist/client/wrangler.json",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
