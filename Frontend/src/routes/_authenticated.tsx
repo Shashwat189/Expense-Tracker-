@@ -1,35 +1,28 @@
-import {
+\import {
   createFileRoute,
   Outlet,
-  redirect,
 } from "@tanstack/react-router";
 
-import { useAuth } from "@/lib/auth-context";
+import {
+  Loader2,
+} from "lucide-react";
 
-import { Loader2 } from "lucide-react";
+import {
+  useAuth,
+} from "@/lib/auth-context";
 
-export const Route = createFileRoute("/_authenticated")({
-  beforeLoad: () => {
-    try {
-      const stored = localStorage.getItem("et:session");
-
-      if (!stored) {
-        throw redirect({
-          to: "/login",
-        });
-      }
-    } catch {
-      throw redirect({
-        to: "/login",
-      });
-    }
-  },
-
-  component: AuthGate,
-});
+export const Route =
+  createFileRoute(
+    "/_authenticated",
+  )({
+    component: AuthGate,
+  });
 
 function AuthGate() {
-  const { user, hydrated } = useAuth();
+  const {
+    user,
+    hydrated,
+  } = useAuth();
 
   if (!hydrated) {
     return (
@@ -40,6 +33,9 @@ function AuthGate() {
   }
 
   if (!user) {
+    window.location.href =
+      "/login";
+
     return null;
   }
 
