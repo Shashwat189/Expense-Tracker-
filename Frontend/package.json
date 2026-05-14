@@ -4,12 +4,23 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
+<<<<<<< HEAD
   "dev": "vite",
   "build": "vite build",
   "preview": "vite preview",
   "lint": "eslint .",
   "format": "prettier --write ."
 },
+=======
+    "dev": "vite dev",
+    "build": "rimraf .wrangler && vite build",
+    "postbuild": "rimraf dist/client/wrangler.json && rimraf .wrangler/deploy",
+    "build:dev": "vite build --mode development",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+>>>>>>> 0d50011e56a9e4c440d143561d8c60b982c7d0b6
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
