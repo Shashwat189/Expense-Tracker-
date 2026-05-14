@@ -1,4 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL;
 
 const TOKEN_KEY = "auth:token";
 const USER_KEY = "auth:user";
@@ -7,42 +8,76 @@ interface ApiErrorType extends Error {
   status: number;
 }
 
-function createApiError(status: number, message: string): ApiErrorType {
-  const error = new Error(message) as ApiErrorType;
+function createApiError(
+  status: number,
+  message: string,
+): ApiErrorType {
+  const error = new Error(
+    message,
+  ) as ApiErrorType;
+
   error.status = status;
+
   return error;
 }
 
 function getToken(): string | null {
   try {
-    return localStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(
+      TOKEN_KEY,
+    );
   } catch {
     return null;
   }
 }
 
-function setToken(token: string): void {
+function setToken(
+  token: string,
+): void {
   try {
-    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(
+      TOKEN_KEY,
+      token,
+    );
   } catch (error) {
-    console.error("Failed to save token", error);
+    console.error(
+      "Failed to save token",
+      error,
+    );
   }
 }
 
 function clearToken(): void {
   try {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(
+      TOKEN_KEY,
+    );
+
+    localStorage.removeItem(
+      USER_KEY,
+    );
   } catch (error) {
-    console.error("Failed to clear token", error);
+    console.error(
+      "Failed to clear token",
+      error,
+    );
   }
 }
 
-async function apiCall(method: string, endpoint: string, body?: unknown): Promise<unknown> {
-  const url = `${API_BASE_URL}${endpoint}`;
+async function apiCall(
+  method: string,
+  endpoint: string,
+  body?: unknown,
+): Promise<unknown> {
+  const url =
+    `${API_BASE_URL}${endpoint}`;
 
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
+  const headers: Record<
+    string,
+    string
+  > = {
+    "Content-Type":
+      "application/json",
   };
 
   const token = getToken();
@@ -52,62 +87,119 @@ async function apiCall(method: string, endpoint: string, body?: unknown): Promis
   }
 
   try {
-    const response = await fetch(url, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : undefined,
-    });
+    const response = await fetch(
+      url,
+      {
+        method,
+        headers,
+        body: body
+          ? JSON.stringify(body)
+          : undefined,
+      },
+    );
 
     let data = null;
 
     try {
-      data = await response.json();
+      data =
+        await response.json();
     } catch {
-      // ignore json parsing error
+      // ignore
     }
 
     if (!response.ok) {
-      throw createApiError(response.status, data?.message || `HTTP ${response.status}`);
+      throw createApiError(
+        response.status,
+        data?.message ||
+          `HTTP ${response.status}`,
+      );
     }
 
     return data;
   } catch (error) {
     if (error instanceof Error) {
-      if (error.message.includes("Failed to fetch")) {
-        throw createApiError(0, `Cannot connect to backend at ${API_BASE_URL}`);
+      if (
+        error.message.includes(
+          "Failed to fetch",
+        )
+      ) {
+        throw createApiError(
+          0,
+          `Cannot connect to backend at ${API_BASE_URL}`,
+        );
       }
 
       throw error;
     }
 
-    throw createApiError(500, "Unknown error");
+    throw createApiError(
+      500,
+      "Unknown error",
+    );
   }
 }
 
 export const authApi = {
-  async signup(name: string, email: string, password: string): Promise<unknown> {
-    const response = await apiCall("POST", "/auth/signup", {
-      name,
-      email,
-      password,
-    });
+  async signup(
+    name: string,
+    email: string,
+    password: string,
+  ): Promise<unknown> {
+    const response =
+      await apiCall(
+        "POST",
+        "/api/auth/signup",
+        {
+          name,
+          email,
+          password,
+        },
+      );
 
-    const authResponse = response as { token: string; user: unknown };
-    setToken(authResponse.token);
-    setStoredUser(authResponse.user);
+    const authResponse =
+      response as {
+        token: string;
+        user: unknown;
+      };
+
+    setToken(
+      authResponse.token,
+    );
+
+    setStoredUser(
+      authResponse.user,
+    );
 
     return authResponse.user;
   },
 
-  async login(email: string, password: string): Promise<unknown> {
-    const response = await apiCall("POST", "/auth/login", {
-      email,
-      password,
-    });
+  async login(
+    email: string,
+    password: string,
+  ): Promise<unknown> {
+    const response =
+      await apiCall(
+        "POST",
+        "/api/auth/login",
+        {
+          email,
+          password,
+        },
+      );
 
-    const authResponse = response as { token: string; user: unknown };
-    setToken(authResponse.token);
-    setStoredUser(authResponse.user);
+    const authResponse =
+      response as {
+        token: string;
+        user: unknown;
+      };
+
+    setToken(
+      authResponse.token,
+    );
+
+    setStoredUser(
+      authResponse.user,
+    );
 
     return authResponse.user;
   },
@@ -119,7 +211,10 @@ export const authApi = {
 
 export const expenseApi = {
   async getExpenses(): Promise<unknown> {
-    return apiCall("GET", "/expenses", undefined);
+    return apiCall(
+      "GET",
+      "/api/expenses",
+    );
   },
 
   async addExpense(
@@ -128,24 +223,38 @@ export const expenseApi = {
     category: string,
     currency: string,
   ): Promise<unknown> {
-    return apiCall("POST", "/expenses", {
-      title,
-      amount,
-      category,
-      currency,
-    });
+    return apiCall(
+      "POST",
+      "/api/expenses",
+      {
+        title,
+        amount,
+        category,
+        currency,
+      },
+    );
   },
 
-  async deleteExpense(id: string): Promise<unknown> {
-    return apiCall("DELETE", `/expenses/${id}`, undefined);
+  async deleteExpense(
+    id: string,
+  ): Promise<unknown> {
+    return apiCall(
+      "DELETE",
+      `/api/expenses/${id}`,
+    );
   },
 };
 
 export function getStoredUser(): unknown {
   try {
-    const data = localStorage.getItem(USER_KEY);
+    const data =
+      localStorage.getItem(
+        USER_KEY,
+      );
 
-    if (!data) return null;
+    if (!data) {
+      return null;
+    }
 
     return JSON.parse(data);
   } catch {
@@ -153,14 +262,24 @@ export function getStoredUser(): unknown {
   }
 }
 
-export function setStoredUser(user: unknown): void {
+export function setStoredUser(
+  user: unknown,
+): void {
   try {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    localStorage.setItem(
+      USER_KEY,
+      JSON.stringify(user),
+    );
   } catch (error) {
-    console.error("Failed to store user", error);
+    console.error(
+      "Failed to store user",
+      error,
+    );
   }
 }
 
-export function getStoredToken(): string | null {
+export function getStoredToken():
+  | string
+  | null {
   return getToken();
 }
