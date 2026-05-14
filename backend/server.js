@@ -14,12 +14,16 @@ app.use(express.json());
 
 // routes
 app.use("/api/auth", authRoutes);
-
 app.use("/api/expenses", expenseRoutes);
 
 // test route
 app.get("/", (req, res) => {
   res.send("API running");
+});
+
+// health check for Render warm-up
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
 });
 
 // 404 handler
