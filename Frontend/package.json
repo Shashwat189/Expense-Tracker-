@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "rimraf .wrangler && vite build",
-    "postbuild": "rimraf dist/client/wrangler.json",
+    "postbuild": "rimraf dist/client/wrangler.json && rimraf .wrangler/deploy",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
