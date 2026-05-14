@@ -1,7 +1,0 @@
-name = "expense-tracker"
-
-compatibility_date = "2025-09-24"
-
-pages_build_output_dir = "./dist/client"
-
-compatibility_flags = ["nodejs_compat"]
